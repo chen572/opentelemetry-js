@@ -170,6 +170,7 @@ export class GrpcJsInstrumentation extends InstrumentationBase {
                 shouldNotTraceServerCall(
                   call.metadata,
                   name,
+                  call.call.handler.path,
                   config.ignoreGrpcMethods
                 )
               ) {

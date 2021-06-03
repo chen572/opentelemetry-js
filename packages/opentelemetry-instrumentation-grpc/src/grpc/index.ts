@@ -170,7 +170,7 @@ export class GrpcNativeInstrumentation extends InstrumentationBase<
               callback: SendUnaryDataCallback
             ) {
               const self = this;
-              if (shouldNotTraceServerCall.call(instrumentation, call, name)) {
+              if (shouldNotTraceServerCall.call(instrumentation, call, name, call.call.handler.path)) {
                 switch (type) {
                   case 'unary':
                   case 'client_stream':
@@ -263,13 +263,13 @@ export class GrpcNativeInstrumentation extends InstrumentationBase<
 
   private _getMethodsToWrap(
     client: typeof grpcTypes.Client,
-    methods: { [key: string]: { originalName?: string } }
+    methods: { [key: string]: { originalName?: string, path: string } }
   ): string[] {
     const methodList: string[] = [];
 
     // For a method defined in .proto as "UnaryMethod"
     Object.entries(methods).forEach(([name, { originalName }]) => {
-      if (!_methodIsIgnored(name, this._config.ignoreGrpcMethods)) {
+      if (!_methodIsIgnored(name, methods[name].path, this._config.ignoreGrpcMethods)) {
         methodList.push(name); // adds camel case method name: "unaryMethod"
         if (
           originalName &&

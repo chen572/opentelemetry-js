@@ -16,7 +16,7 @@
 
 import { InstrumentationConfig } from '@opentelemetry/instrumentation';
 
-export type IgnoreMatcher = string | RegExp | ((str: string) => boolean);
+export type IgnoreMatcher = string | RegExp | ((methodName: string, serviceName: string) => boolean);
 
 export interface GrpcInstrumentationConfig extends InstrumentationConfig {
   /* Omits tracing on any gRPC methods that match any of

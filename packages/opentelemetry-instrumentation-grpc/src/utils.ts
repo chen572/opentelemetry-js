@@ -58,14 +58,15 @@ export const _grpcStatusCodeToSpanStatus = (status: number): SpanStatus => {
  */
 const _satisfiesPattern = (
   methodName: string,
-  pattern: IgnoreMatcher
+  pattern: IgnoreMatcher,
+  path: string
 ): boolean => {
   if (typeof pattern === 'string') {
     return pattern.toLowerCase() === methodName.toLowerCase();
   } else if (pattern instanceof RegExp) {
     return pattern.test(methodName);
   } else if (typeof pattern === 'function') {
-    return pattern(methodName);
+    return pattern(methodName, path);
   } else {
     return false;
   }
@@ -80,7 +81,8 @@ const _satisfiesPattern = (
  */
 export const _methodIsIgnored = (
   methodName: string,
-  ignoredMethods?: IgnoreMatcher[]
+  path: string,
+  ignoredMethods?: IgnoreMatcher[],
 ): boolean => {
   if (!ignoredMethods) {
     // No ignored gRPC methods
@@ -88,7 +90,7 @@ export const _methodIsIgnored = (
   }
 
   for (const pattern of ignoredMethods) {
-    if (_satisfiesPattern(methodName, pattern)) {
+    if (_satisfiesPattern(methodName, pattern, path)) {
       return true;
     }
   }

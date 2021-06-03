@@ -42,13 +42,13 @@ import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
 export function getMethodsToWrap(
   this: GrpcJsInstrumentation,
   client: typeof grpcJs.Client,
-  methods: { [key: string]: { originalName?: string } }
+  methods: { [key: string]: { originalName?: string, path: string } }
 ): string[] {
   const methodList: string[] = [];
 
   // For a method defined in .proto as "UnaryMethod"
   Object.entries(methods).forEach(([name, { originalName }]) => {
-    if (!_methodIsIgnored(name, this._config.ignoreGrpcMethods)) {
+    if (!_methodIsIgnored(name, methods[name].path, this._config.ignoreGrpcMethods)) {
       methodList.push(name); // adds camel case method name: "unaryMethod"
       if (
         originalName &&

@@ -126,11 +126,13 @@ export const serverStreamAndBidiHandler = function <RequestType, ResponseType>(
 export const shouldNotTraceServerCall = function (
   this: GrpcNativeInstrumentation,
   call: ServerCallWithMeta,
-  name: string
+  name: string,
+  path: string
 ): boolean {
   const parsedName = name.split('/');
   return _methodIsIgnored(
     parsedName[parsedName.length - 1] || name,
+    path,
     this._config.ignoreGrpcMethods
   );
 };

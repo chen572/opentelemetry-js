@@ -215,11 +215,13 @@ export function handleUntracedServerFunction<RequestType, ResponseType>(
 export function shouldNotTraceServerCall(
   metadata: grpcJs.Metadata,
   methodName: string,
+  path: string,
   ignoreGrpcMethods?: IgnoreMatcher[]
 ): boolean {
   const parsedName = methodName.split('/');
   return _methodIsIgnored(
     parsedName[parsedName.length - 1] || methodName,
-    ignoreGrpcMethods
+    path,
+    ignoreGrpcMethods,
   );
 }
